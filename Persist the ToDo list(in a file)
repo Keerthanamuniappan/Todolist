@@ -1,0 +1,39 @@
+import PySimpleGUI as sg
+def file_write():
+    f=open("new.txt","w+")
+    f.write("%s\n" %tasks)
+    f.close()
+f=open("new.txt","r")
+
+tasks=[]
+
+layout = [
+    [sg.Text('ToDo')],
+    [sg.InputText('', key='todo_item'), sg.Button(button_text='Add', key="add_save")],
+    [sg.Listbox(values=tasks, size=(40, 10), key="items"), sg.Button('Delete'), sg.Button('Edit')],
+   
+]
+tasks=window.FindElement.Update(f.read())
+window = sg.Window('ToDo App', layout)
+while True:  # Event Loop
+    event, values = window.Read()
+    if event == "add_save":
+        tasks.append(values['todo_item'])
+        window.FindElement('items').Update(values=tasks)
+        window.FindElement('add_save').Update("Add")
+        file_write()
+    elif event == "Delete":
+        tasks.remove(values["items"][0])
+        window.FindElement('items').Update(values=tasks)
+        file_write()
+    elif event == "Edit":
+        edit_val = values["items"][0]
+        print(edit_val)
+        tasks.remove(values["items"][0])
+        window.FindElement('items').Update(values=tasks)
+        window.FindElement('todo_item').Update(value=edit_val)
+        window.FindElement('add_save').Update("Save")
+    elif event == None:
+        break
+
+window.Close()
